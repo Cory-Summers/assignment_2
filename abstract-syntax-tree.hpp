@@ -1,0 +1,5 @@
+#ifndef ABSTRACT_SYNTAX_TREE_HPP
+#define ABSTRACT_SYNTAX_TREE_HPP
+#include <iostream>
+
+#endif //ABSTRACT_SYNTAX_TREE_HPP
