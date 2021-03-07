@@ -1,0 +1,2513 @@
+Terminals unused in grammar
+
+   "in"
+   T_OP_COMP_ASG
+
+
+State 155 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: DeclList
+
+    2 DeclList: DeclList Decl
+    3         | Decl
+
+    4 Decl: VariableDecl
+    5     | FunctionDecl
+
+    6 VariableDecl: TypeSpecifier VariableDeclList ";"
+
+    7 ScopedVariableDecl: "static" TypeSpecifier VariableDeclList ";"
+    8                   | TypeSpecifier VariableDeclList ";"
+
+    9 VariableDeclList: VariableDeclInit
+   10                 | VariableDeclList "," VariableDeclInit
+
+   11 VariableDeclInit: VariableDeclID ":" SimpleExpression
+   12                 | VariableDeclID
+
+   13 VariableDeclID: T_IDENTIFIER
+   14               | T_IDENTIFIER "[" T_NUMCONST "]"
+
+   15 TypeSpecifier: TYPE_INT
+   16              | TYPE_CHAR
+   17              | TYPE_BOOL
+
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER "(" Parameters ")" Statement
+   19             | T_IDENTIFIER "(" Parameters ")" Statement
+
+   20 Parameters: %empty
+   21           | ParameterList
+
+   22 ParameterList: ParameterList ";" ParameterTypeList
+   23              | ParameterTypeList
+
+   24 ParameterTypeList: TypeSpecifier ParameterIDList
+
+   25 ParameterIDList: ParameterIDList "," ParameterID
+   26                | ParameterID
+
+   27 ParameterID: T_IDENTIFIER
+   28            | T_IDENTIFIER "[" "]"
+
+   29 Statement: ExpressionStmt
+   30          | CompoundStmt
+   31          | ConditionStmt
+   32          | IteratorStmt
+   33          | ReturnStmt
+   34          | BreakStmt
+
+   35 ExpressionStmt: Expression ";"
+   36               | ";"
+
+   37 CompoundStmt: "{" LocalDecls StatementList "}"
+
+   38 LocalDecls: %empty
+   39           | LocalDecls ScopedVariableDecl
+
+   40 StatementList: %empty
+   41              | StatementList Statement
+
+   42 ConditionStmt: CompleteCondition
+   43              | IncompleteCondition
+
+   44 CompleteCondition: "if" SimpleExpression "then" Statement "else" Statement
+
+   45 IncompleteCondition: "if" SimpleExpression "then" Statement
+
+   46 IteratorStmt: "while" SimpleExpression "do" Statement
+   47             | "for" T_IDENTIFIER "=" IteratorRange "do" Statement
+
+   48 IteratorRange: SimpleExpression
+   49              | SimpleExpression "to" SimpleExpression
+   50              | SimpleExpression "to" SimpleExpression "by" SimpleExpression
+
+   51 ReturnStmt: "return" ";"
+   52           | "return" Expression ";"
+
+   53 BreakStmt: "break" ";"
+
+   54 Expression: Mutable "=" Expression
+   55           | Mutable OperAssign Expression
+   56           | Mutable "++"
+   57           | Mutable "--"
+   58           | SimpleExpression
+
+   59 OperAssign: T_OP_ADDASS
+   60           | T_OP_DIVASS
+   61           | T_OP_MINASS
+   62           | T_OP_MULASS
+
+   63 SimpleExpression: SimpleExpression "or" AndExpr
+   64                 | AndExpr
+
+   65 AndExpr: AndExpr "and" UnaryReletiveExpr
+   66        | UnaryReletiveExpr
+
+   67 UnaryReletiveExpr: "not" UnaryReletiveExpr
+   68                  | ReletiveExpr
+
+   69 ReletiveExpr: MinMaxExp ReletiveOper MinMaxExp
+   70             | MinMaxExp
+
+   71 ReletiveOper: T_OP_LES_EQ
+   72             | T_OP_LESS
+   73             | T_OP_GREAT
+   74             | T_OP_GRE_EQ
+   75             | T_OP_EQUALIVE
+   76             | T_OP_NOT_EQUAL
+
+   77 MinMaxExp: MinMaxExp MinMaxOper SumExpr
+   78          | SumExpr
+
+   79 MinMaxOper: T_OP_MIN
+   80           | T_OP_MAX
+
+   81 SumExpr: SumExpr SumOper MulExp
+   82        | MulExp
+
+   83 SumOper: T_OP_PLUS
+   84        | T_OP_MINUS
+
+   85 MulExp: MulExp MulOp UnaryExpr
+   86       | UnaryExpr
+
+   87 MulOp: T_OP_MULTI
+   88      | T_OP_DIVIDE
+   89      | T_OP_MODULO
+
+   90 UnaryExpr: UnaryOper UnaryExpr
+   91          | Factor
+
+   92 UnaryOper: T_OP_MINUS
+   93          | T_OP_MULTI
+   94          | T_OP_GENERATOR
+
+   95 Factor: Immutable
+   96       | Mutable
+
+   97 Mutable: T_IDENTIFIER
+   98        | T_IDENTIFIER "[" Expression "]"
+
+   99 Immutable: "(" Expression ")"
+  100          | Call
+  101          | Constant
+
+  102 Call: T_IDENTIFIER "(" Arguments ")"
+
+  103 Arguments: %empty
+  104          | ArgumentList
+
+  105 ArgumentList: ArgumentList "," Expression
+  106             | Expression
+
+  107 Constant: T_NUMCONST
+  108         | T_CHARCONST
+  109         | T_STRINGCONST
+  110         | T_BOOLCONST
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+TYPE_INT (258) 15
+TYPE_CHAR (259) 16
+TYPE_BOOL (260) 17
+"," (261) 10 25 105
+":" (262) 11
+"[" (263) 14 28 98
+"]" (264) 14 28 98
+";" (265) 6 7 8 22 35 36 51 52 53
+"(" (266) 18 19 99 102
+")" (267) 18 19 99 102
+"{" (268) 37
+"}" (269) 37
+"=" (270) 47 54
+"if" (271) 44 45
+"then" (272) 44 45
+"else" (273) 44
+"while" (274) 46
+"do" (275) 46 47
+"for" (276) 47
+"by" (277) 50
+"return" (278) 51 52
+"in" (279)
+"break" (280) 53
+"or" (281) 63
+"and" (282) 65
+"static" (283) 7
+"not" (284) 67
+"to" (285) 49 50
+"--" (286) 57
+"++" (287) 56
+T_OP_LES_EQ (288) 71
+T_OP_LESS (289) 72
+T_OP_GREAT (290) 73
+T_OP_GRE_EQ (291) 74
+T_OP_EQUALIVE (292) 75
+T_OP_NOT_EQUAL (293) 76
+T_OP_COMP_ASG (294)
+T_OP_MAX (295) 80
+T_OP_MIN (296) 79
+T_OP_MINUS (297) 84 92
+T_OP_PLUS (298) 83
+T_OP_MULTI (299) 87 93
+T_OP_DIVIDE (300) 88
+T_OP_MODULO (301) 89
+T_OP_GENERATOR (302) 94
+T_OP_ADDASS (303) 59
+T_OP_MINASS (304) 61
+T_OP_MULASS (305) 62
+T_OP_DIVASS (306) 60
+T_STRINGCONST (307) 109
+T_NUMCONST (308) 14 107
+T_CHARCONST (309) 108
+T_BOOLCONST (310) 110
+T_IDENTIFIER (311) 13 14 18 19 27 28 47 97 98 102
+
+
+Nonterminals, with rules where they appear
+
+$accept (57)
+    on left: 0
+Program (58)
+    on left: 1, on right: 0
+DeclList (59)
+    on left: 2 3, on right: 1 2
+Decl (60)
+    on left: 4 5, on right: 2 3
+VariableDecl (61)
+    on left: 6, on right: 4
+ScopedVariableDecl (62)
+    on left: 7 8, on right: 39
+VariableDeclList (63)
+    on left: 9 10, on right: 6 7 8 10
+VariableDeclInit (64)
+    on left: 11 12, on right: 9 10
+VariableDeclID (65)
+    on left: 13 14, on right: 11 12
+TypeSpecifier (66)
+    on left: 15 16 17, on right: 6 7 8 18 24
+FunctionDecl (67)
+    on left: 18 19, on right: 5
+Parameters (68)
+    on left: 20 21, on right: 18 19
+ParameterList (69)
+    on left: 22 23, on right: 21 22
+ParameterTypeList (70)
+    on left: 24, on right: 22 23
+ParameterIDList (71)
+    on left: 25 26, on right: 24 25
+ParameterID (72)
+    on left: 27 28, on right: 25 26
+Statement (73)
+    on left: 29 30 31 32 33 34, on right: 18 19 41 44 45 46 47
+ExpressionStmt (74)
+    on left: 35 36, on right: 29
+CompoundStmt (75)
+    on left: 37, on right: 30
+LocalDecls (76)
+    on left: 38 39, on right: 37 39
+StatementList (77)
+    on left: 40 41, on right: 37 41
+ConditionStmt (78)
+    on left: 42 43, on right: 31
+CompleteCondition (79)
+    on left: 44, on right: 42
+IncompleteCondition (80)
+    on left: 45, on right: 43
+IteratorStmt (81)
+    on left: 46 47, on right: 32
+IteratorRange (82)
+    on left: 48 49 50, on right: 47
+ReturnStmt (83)
+    on left: 51 52, on right: 33
+BreakStmt (84)
+    on left: 53, on right: 34
+Expression (85)
+    on left: 54 55 56 57 58, on right: 35 52 54 55 98 99 105 106
+OperAssign (86)
+    on left: 59 60 61 62, on right: 55
+SimpleExpression (87)
+    on left: 63 64, on right: 11 44 45 46 48 49 50 58 63
+AndExpr (88)
+    on left: 65 66, on right: 63 64 65
+UnaryReletiveExpr (89)
+    on left: 67 68, on right: 65 66 67
+ReletiveExpr (90)
+    on left: 69 70, on right: 68
+ReletiveOper (91)
+    on left: 71 72 73 74 75 76, on right: 69
+MinMaxExp (92)
+    on left: 77 78, on right: 69 70 77
+MinMaxOper (93)
+    on left: 79 80, on right: 77
+SumExpr (94)
+    on left: 81 82, on right: 77 78 81
+SumOper (95)
+    on left: 83 84, on right: 81
+MulExp (96)
+    on left: 85 86, on right: 81 82 85
+MulOp (97)
+    on left: 87 88 89, on right: 85
+UnaryExpr (98)
+    on left: 90 91, on right: 85 86 90
+UnaryOper (99)
+    on left: 92 93 94, on right: 90
+Factor (100)
+    on left: 95 96, on right: 91
+Mutable (101)
+    on left: 97 98, on right: 54 55 56 57 96
+Immutable (102)
+    on left: 99 100 101, on right: 95
+Call (103)
+    on left: 102, on right: 100
+Arguments (104)
+    on left: 103 104, on right: 102
+ArgumentList (105)
+    on left: 105 106, on right: 104 105
+Constant (106)
+    on left: 107 108 109 110, on right: 101
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    TYPE_INT      shift, and go to state 1
+    TYPE_CHAR     shift, and go to state 2
+    TYPE_BOOL     shift, and go to state 3
+    T_IDENTIFIER  shift, and go to state 4
+
+    Program        go to state 5
+    DeclList       go to state 6
+    Decl           go to state 7
+    VariableDecl   go to state 8
+    TypeSpecifier  go to state 9
+    FunctionDecl   go to state 10
+
+
+State 1
+
+   15 TypeSpecifier: TYPE_INT .
+
+    $default  reduce using rule 15 (TypeSpecifier)
+
+
+State 2
+
+   16 TypeSpecifier: TYPE_CHAR .
+
+    $default  reduce using rule 16 (TypeSpecifier)
+
+
+State 3
+
+   17 TypeSpecifier: TYPE_BOOL .
+
+    $default  reduce using rule 17 (TypeSpecifier)
+
+
+State 4
+
+   19 FunctionDecl: T_IDENTIFIER . "(" Parameters ")" Statement
+
+    "("  shift, and go to state 11
+
+
+State 5
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 12
+
+
+State 6
+
+    1 Program: DeclList .
+    2 DeclList: DeclList . Decl
+
+    TYPE_INT      shift, and go to state 1
+    TYPE_CHAR     shift, and go to state 2
+    TYPE_BOOL     shift, and go to state 3
+    T_IDENTIFIER  shift, and go to state 4
+
+    $default  reduce using rule 1 (Program)
+
+    Decl           go to state 13
+    VariableDecl   go to state 8
+    TypeSpecifier  go to state 9
+    FunctionDecl   go to state 10
+
+
+State 7
+
+    3 DeclList: Decl .
+
+    $default  reduce using rule 3 (DeclList)
+
+
+State 8
+
+    4 Decl: VariableDecl .
+
+    $default  reduce using rule 4 (Decl)
+
+
+State 9
+
+    6 VariableDecl: TypeSpecifier . VariableDeclList ";"
+   18 FunctionDecl: TypeSpecifier . T_IDENTIFIER "(" Parameters ")" Statement
+
+    T_IDENTIFIER  shift, and go to state 14
+
+    VariableDeclList  go to state 15
+    VariableDeclInit  go to state 16
+    VariableDeclID    go to state 17
+
+
+State 10
+
+    5 Decl: FunctionDecl .
+
+    $default  reduce using rule 5 (Decl)
+
+
+State 11
+
+   19 FunctionDecl: T_IDENTIFIER "(" . Parameters ")" Statement
+
+    TYPE_INT   shift, and go to state 1
+    TYPE_CHAR  shift, and go to state 2
+    TYPE_BOOL  shift, and go to state 3
+
+    $default  reduce using rule 20 (Parameters)
+
+    TypeSpecifier      go to state 18
+    Parameters         go to state 19
+    ParameterList      go to state 20
+    ParameterTypeList  go to state 21
+
+
+State 12
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+State 13
+
+    2 DeclList: DeclList Decl .
+
+    $default  reduce using rule 2 (DeclList)
+
+
+State 14
+
+   13 VariableDeclID: T_IDENTIFIER .
+   14               | T_IDENTIFIER . "[" T_NUMCONST "]"
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER . "(" Parameters ")" Statement
+
+    "["  shift, and go to state 22
+    "("  shift, and go to state 23
+
+    $default  reduce using rule 13 (VariableDeclID)
+
+
+State 15
+
+    6 VariableDecl: TypeSpecifier VariableDeclList . ";"
+   10 VariableDeclList: VariableDeclList . "," VariableDeclInit
+
+    ","  shift, and go to state 24
+    ";"  shift, and go to state 25
+
+
+State 16
+
+    9 VariableDeclList: VariableDeclInit .
+
+    $default  reduce using rule 9 (VariableDeclList)
+
+
+State 17
+
+   11 VariableDeclInit: VariableDeclID . ":" SimpleExpression
+   12                 | VariableDeclID .
+
+    ":"  shift, and go to state 26
+
+    $default  reduce using rule 12 (VariableDeclInit)
+
+
+State 18
+
+   24 ParameterTypeList: TypeSpecifier . ParameterIDList
+
+    T_IDENTIFIER  shift, and go to state 27
+
+    ParameterIDList  go to state 28
+    ParameterID      go to state 29
+
+
+State 19
+
+   19 FunctionDecl: T_IDENTIFIER "(" Parameters . ")" Statement
+
+    ")"  shift, and go to state 30
+
+
+State 20
+
+   21 Parameters: ParameterList .
+   22 ParameterList: ParameterList . ";" ParameterTypeList
+
+    ";"  shift, and go to state 31
+
+    $default  reduce using rule 21 (Parameters)
+
+
+State 21
+
+   23 ParameterList: ParameterTypeList .
+
+    $default  reduce using rule 23 (ParameterList)
+
+
+State 22
+
+   14 VariableDeclID: T_IDENTIFIER "[" . T_NUMCONST "]"
+
+    T_NUMCONST  shift, and go to state 32
+
+
+State 23
+
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER "(" . Parameters ")" Statement
+
+    TYPE_INT   shift, and go to state 1
+    TYPE_CHAR  shift, and go to state 2
+    TYPE_BOOL  shift, and go to state 3
+
+    $default  reduce using rule 20 (Parameters)
+
+    TypeSpecifier      go to state 18
+    Parameters         go to state 33
+    ParameterList      go to state 20
+    ParameterTypeList  go to state 21
+
+
+State 24
+
+   10 VariableDeclList: VariableDeclList "," . VariableDeclInit
+
+    T_IDENTIFIER  shift, and go to state 34
+
+    VariableDeclInit  go to state 35
+    VariableDeclID    go to state 17
+
+
+State 25
+
+    6 VariableDecl: TypeSpecifier VariableDeclList ";" .
+
+    $default  reduce using rule 6 (VariableDecl)
+
+
+State 26
+
+   11 VariableDeclInit: VariableDeclID ":" . SimpleExpression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SimpleExpression   go to state 46
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 27
+
+   27 ParameterID: T_IDENTIFIER .
+   28            | T_IDENTIFIER . "[" "]"
+
+    "["  shift, and go to state 60
+
+    $default  reduce using rule 27 (ParameterID)
+
+
+State 28
+
+   24 ParameterTypeList: TypeSpecifier ParameterIDList .
+   25 ParameterIDList: ParameterIDList . "," ParameterID
+
+    ","  shift, and go to state 61
+
+    $default  reduce using rule 24 (ParameterTypeList)
+
+
+State 29
+
+   26 ParameterIDList: ParameterID .
+
+    $default  reduce using rule 26 (ParameterIDList)
+
+
+State 30
+
+   19 FunctionDecl: T_IDENTIFIER "(" Parameters ")" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 69
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 31
+
+   22 ParameterList: ParameterList ";" . ParameterTypeList
+
+    TYPE_INT   shift, and go to state 1
+    TYPE_CHAR  shift, and go to state 2
+    TYPE_BOOL  shift, and go to state 3
+
+    TypeSpecifier      go to state 18
+    ParameterTypeList  go to state 81
+
+
+State 32
+
+   14 VariableDeclID: T_IDENTIFIER "[" T_NUMCONST . "]"
+
+    "]"  shift, and go to state 82
+
+
+State 33
+
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER "(" Parameters . ")" Statement
+
+    ")"  shift, and go to state 83
+
+
+State 34
+
+   13 VariableDeclID: T_IDENTIFIER .
+   14               | T_IDENTIFIER . "[" T_NUMCONST "]"
+
+    "["  shift, and go to state 22
+
+    $default  reduce using rule 13 (VariableDeclID)
+
+
+State 35
+
+   10 VariableDeclList: VariableDeclList "," VariableDeclInit .
+
+    $default  reduce using rule 10 (VariableDeclList)
+
+
+State 36
+
+   99 Immutable: "(" . Expression ")"
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 84
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 37
+
+   67 UnaryReletiveExpr: "not" . UnaryReletiveExpr
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    UnaryReletiveExpr  go to state 85
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 38
+
+   92 UnaryOper: T_OP_MINUS .
+
+    $default  reduce using rule 92 (UnaryOper)
+
+
+State 39
+
+   93 UnaryOper: T_OP_MULTI .
+
+    $default  reduce using rule 93 (UnaryOper)
+
+
+State 40
+
+   94 UnaryOper: T_OP_GENERATOR .
+
+    $default  reduce using rule 94 (UnaryOper)
+
+
+State 41
+
+  109 Constant: T_STRINGCONST .
+
+    $default  reduce using rule 109 (Constant)
+
+
+State 42
+
+  107 Constant: T_NUMCONST .
+
+    $default  reduce using rule 107 (Constant)
+
+
+State 43
+
+  108 Constant: T_CHARCONST .
+
+    $default  reduce using rule 108 (Constant)
+
+
+State 44
+
+  110 Constant: T_BOOLCONST .
+
+    $default  reduce using rule 110 (Constant)
+
+
+State 45
+
+   97 Mutable: T_IDENTIFIER .
+   98        | T_IDENTIFIER . "[" Expression "]"
+  102 Call: T_IDENTIFIER . "(" Arguments ")"
+
+    "["  shift, and go to state 86
+    "("  shift, and go to state 87
+
+    $default  reduce using rule 97 (Mutable)
+
+
+State 46
+
+   11 VariableDeclInit: VariableDeclID ":" SimpleExpression .
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "or"  shift, and go to state 88
+
+    $default  reduce using rule 11 (VariableDeclInit)
+
+
+State 47
+
+   64 SimpleExpression: AndExpr .
+   65 AndExpr: AndExpr . "and" UnaryReletiveExpr
+
+    "and"  shift, and go to state 89
+
+    $default  reduce using rule 64 (SimpleExpression)
+
+
+State 48
+
+   66 AndExpr: UnaryReletiveExpr .
+
+    $default  reduce using rule 66 (AndExpr)
+
+
+State 49
+
+   68 UnaryReletiveExpr: ReletiveExpr .
+
+    $default  reduce using rule 68 (UnaryReletiveExpr)
+
+
+State 50
+
+   69 ReletiveExpr: MinMaxExp . ReletiveOper MinMaxExp
+   70             | MinMaxExp .
+   77 MinMaxExp: MinMaxExp . MinMaxOper SumExpr
+
+    T_OP_LES_EQ     shift, and go to state 90
+    T_OP_LESS       shift, and go to state 91
+    T_OP_GREAT      shift, and go to state 92
+    T_OP_GRE_EQ     shift, and go to state 93
+    T_OP_EQUALIVE   shift, and go to state 94
+    T_OP_NOT_EQUAL  shift, and go to state 95
+    T_OP_MAX        shift, and go to state 96
+    T_OP_MIN        shift, and go to state 97
+
+    $default  reduce using rule 70 (ReletiveExpr)
+
+    ReletiveOper  go to state 98
+    MinMaxOper    go to state 99
+
+
+State 51
+
+   78 MinMaxExp: SumExpr .
+   81 SumExpr: SumExpr . SumOper MulExp
+
+    T_OP_MINUS  shift, and go to state 100
+    T_OP_PLUS   shift, and go to state 101
+
+    $default  reduce using rule 78 (MinMaxExp)
+
+    SumOper  go to state 102
+
+
+State 52
+
+   82 SumExpr: MulExp .
+   85 MulExp: MulExp . MulOp UnaryExpr
+
+    T_OP_MULTI   shift, and go to state 103
+    T_OP_DIVIDE  shift, and go to state 104
+    T_OP_MODULO  shift, and go to state 105
+
+    $default  reduce using rule 82 (SumExpr)
+
+    MulOp  go to state 106
+
+
+State 53
+
+   86 MulExp: UnaryExpr .
+
+    $default  reduce using rule 86 (MulExp)
+
+
+State 54
+
+   90 UnaryExpr: UnaryOper . UnaryExpr
+
+    "("             shift, and go to state 36
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    UnaryExpr  go to state 107
+    UnaryOper  go to state 54
+    Factor     go to state 55
+    Mutable    go to state 56
+    Immutable  go to state 57
+    Call       go to state 58
+    Constant   go to state 59
+
+
+State 55
+
+   91 UnaryExpr: Factor .
+
+    $default  reduce using rule 91 (UnaryExpr)
+
+
+State 56
+
+   96 Factor: Mutable .
+
+    $default  reduce using rule 96 (Factor)
+
+
+State 57
+
+   95 Factor: Immutable .
+
+    $default  reduce using rule 95 (Factor)
+
+
+State 58
+
+  100 Immutable: Call .
+
+    $default  reduce using rule 100 (Immutable)
+
+
+State 59
+
+  101 Immutable: Constant .
+
+    $default  reduce using rule 101 (Immutable)
+
+
+State 60
+
+   28 ParameterID: T_IDENTIFIER "[" . "]"
+
+    "]"  shift, and go to state 108
+
+
+State 61
+
+   25 ParameterIDList: ParameterIDList "," . ParameterID
+
+    T_IDENTIFIER  shift, and go to state 27
+
+    ParameterID  go to state 109
+
+
+State 62
+
+   36 ExpressionStmt: ";" .
+
+    $default  reduce using rule 36 (ExpressionStmt)
+
+
+State 63
+
+   37 CompoundStmt: "{" . LocalDecls StatementList "}"
+
+    $default  reduce using rule 38 (LocalDecls)
+
+    LocalDecls  go to state 110
+
+
+State 64
+
+   44 CompleteCondition: "if" . SimpleExpression "then" Statement "else" Statement
+   45 IncompleteCondition: "if" . SimpleExpression "then" Statement
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SimpleExpression   go to state 111
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 65
+
+   46 IteratorStmt: "while" . SimpleExpression "do" Statement
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SimpleExpression   go to state 112
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 66
+
+   47 IteratorStmt: "for" . T_IDENTIFIER "=" IteratorRange "do" Statement
+
+    T_IDENTIFIER  shift, and go to state 113
+
+
+State 67
+
+   51 ReturnStmt: "return" . ";"
+   52           | "return" . Expression ";"
+
+    ";"             shift, and go to state 114
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 115
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 68
+
+   53 BreakStmt: "break" . ";"
+
+    ";"  shift, and go to state 116
+
+
+State 69
+
+   19 FunctionDecl: T_IDENTIFIER "(" Parameters ")" Statement .
+
+    $default  reduce using rule 19 (FunctionDecl)
+
+
+State 70
+
+   29 Statement: ExpressionStmt .
+
+    $default  reduce using rule 29 (Statement)
+
+
+State 71
+
+   30 Statement: CompoundStmt .
+
+    $default  reduce using rule 30 (Statement)
+
+
+State 72
+
+   31 Statement: ConditionStmt .
+
+    $default  reduce using rule 31 (Statement)
+
+
+State 73
+
+   42 ConditionStmt: CompleteCondition .
+
+    $default  reduce using rule 42 (ConditionStmt)
+
+
+State 74
+
+   43 ConditionStmt: IncompleteCondition .
+
+    $default  reduce using rule 43 (ConditionStmt)
+
+
+State 75
+
+   32 Statement: IteratorStmt .
+
+    $default  reduce using rule 32 (Statement)
+
+
+State 76
+
+   33 Statement: ReturnStmt .
+
+    $default  reduce using rule 33 (Statement)
+
+
+State 77
+
+   34 Statement: BreakStmt .
+
+    $default  reduce using rule 34 (Statement)
+
+
+State 78
+
+   35 ExpressionStmt: Expression . ";"
+
+    ";"  shift, and go to state 117
+
+
+State 79
+
+   58 Expression: SimpleExpression .
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "or"  shift, and go to state 88
+
+    $default  reduce using rule 58 (Expression)
+
+
+State 80
+
+   54 Expression: Mutable . "=" Expression
+   55           | Mutable . OperAssign Expression
+   56           | Mutable . "++"
+   57           | Mutable . "--"
+   96 Factor: Mutable .
+
+    "="          shift, and go to state 118
+    "--"         shift, and go to state 119
+    "++"         shift, and go to state 120
+    T_OP_ADDASS  shift, and go to state 121
+    T_OP_MINASS  shift, and go to state 122
+    T_OP_MULASS  shift, and go to state 123
+    T_OP_DIVASS  shift, and go to state 124
+
+    $default  reduce using rule 96 (Factor)
+
+    OperAssign  go to state 125
+
+
+State 81
+
+   22 ParameterList: ParameterList ";" ParameterTypeList .
+
+    $default  reduce using rule 22 (ParameterList)
+
+
+State 82
+
+   14 VariableDeclID: T_IDENTIFIER "[" T_NUMCONST "]" .
+
+    $default  reduce using rule 14 (VariableDeclID)
+
+
+State 83
+
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER "(" Parameters ")" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 126
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 84
+
+   99 Immutable: "(" Expression . ")"
+
+    ")"  shift, and go to state 127
+
+
+State 85
+
+   67 UnaryReletiveExpr: "not" UnaryReletiveExpr .
+
+    $default  reduce using rule 67 (UnaryReletiveExpr)
+
+
+State 86
+
+   98 Mutable: T_IDENTIFIER "[" . Expression "]"
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 128
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 87
+
+  102 Call: T_IDENTIFIER "(" . Arguments ")"
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    $default  reduce using rule 103 (Arguments)
+
+    Expression         go to state 129
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Arguments          go to state 130
+    ArgumentList       go to state 131
+    Constant           go to state 59
+
+
+State 88
+
+   63 SimpleExpression: SimpleExpression "or" . AndExpr
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    AndExpr            go to state 132
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 89
+
+   65 AndExpr: AndExpr "and" . UnaryReletiveExpr
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    UnaryReletiveExpr  go to state 133
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 90
+
+   71 ReletiveOper: T_OP_LES_EQ .
+
+    $default  reduce using rule 71 (ReletiveOper)
+
+
+State 91
+
+   72 ReletiveOper: T_OP_LESS .
+
+    $default  reduce using rule 72 (ReletiveOper)
+
+
+State 92
+
+   73 ReletiveOper: T_OP_GREAT .
+
+    $default  reduce using rule 73 (ReletiveOper)
+
+
+State 93
+
+   74 ReletiveOper: T_OP_GRE_EQ .
+
+    $default  reduce using rule 74 (ReletiveOper)
+
+
+State 94
+
+   75 ReletiveOper: T_OP_EQUALIVE .
+
+    $default  reduce using rule 75 (ReletiveOper)
+
+
+State 95
+
+   76 ReletiveOper: T_OP_NOT_EQUAL .
+
+    $default  reduce using rule 76 (ReletiveOper)
+
+
+State 96
+
+   80 MinMaxOper: T_OP_MAX .
+
+    $default  reduce using rule 80 (MinMaxOper)
+
+
+State 97
+
+   79 MinMaxOper: T_OP_MIN .
+
+    $default  reduce using rule 79 (MinMaxOper)
+
+
+State 98
+
+   69 ReletiveExpr: MinMaxExp ReletiveOper . MinMaxExp
+
+    "("             shift, and go to state 36
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    MinMaxExp  go to state 134
+    SumExpr    go to state 51
+    MulExp     go to state 52
+    UnaryExpr  go to state 53
+    UnaryOper  go to state 54
+    Factor     go to state 55
+    Mutable    go to state 56
+    Immutable  go to state 57
+    Call       go to state 58
+    Constant   go to state 59
+
+
+State 99
+
+   77 MinMaxExp: MinMaxExp MinMaxOper . SumExpr
+
+    "("             shift, and go to state 36
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SumExpr    go to state 135
+    MulExp     go to state 52
+    UnaryExpr  go to state 53
+    UnaryOper  go to state 54
+    Factor     go to state 55
+    Mutable    go to state 56
+    Immutable  go to state 57
+    Call       go to state 58
+    Constant   go to state 59
+
+
+State 100
+
+   84 SumOper: T_OP_MINUS .
+
+    $default  reduce using rule 84 (SumOper)
+
+
+State 101
+
+   83 SumOper: T_OP_PLUS .
+
+    $default  reduce using rule 83 (SumOper)
+
+
+State 102
+
+   81 SumExpr: SumExpr SumOper . MulExp
+
+    "("             shift, and go to state 36
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    MulExp     go to state 136
+    UnaryExpr  go to state 53
+    UnaryOper  go to state 54
+    Factor     go to state 55
+    Mutable    go to state 56
+    Immutable  go to state 57
+    Call       go to state 58
+    Constant   go to state 59
+
+
+State 103
+
+   87 MulOp: T_OP_MULTI .
+
+    $default  reduce using rule 87 (MulOp)
+
+
+State 104
+
+   88 MulOp: T_OP_DIVIDE .
+
+    $default  reduce using rule 88 (MulOp)
+
+
+State 105
+
+   89 MulOp: T_OP_MODULO .
+
+    $default  reduce using rule 89 (MulOp)
+
+
+State 106
+
+   85 MulExp: MulExp MulOp . UnaryExpr
+
+    "("             shift, and go to state 36
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    UnaryExpr  go to state 137
+    UnaryOper  go to state 54
+    Factor     go to state 55
+    Mutable    go to state 56
+    Immutable  go to state 57
+    Call       go to state 58
+    Constant   go to state 59
+
+
+State 107
+
+   90 UnaryExpr: UnaryOper UnaryExpr .
+
+    $default  reduce using rule 90 (UnaryExpr)
+
+
+State 108
+
+   28 ParameterID: T_IDENTIFIER "[" "]" .
+
+    $default  reduce using rule 28 (ParameterID)
+
+
+State 109
+
+   25 ParameterIDList: ParameterIDList "," ParameterID .
+
+    $default  reduce using rule 25 (ParameterIDList)
+
+
+State 110
+
+   37 CompoundStmt: "{" LocalDecls . StatementList "}"
+   39 LocalDecls: LocalDecls . ScopedVariableDecl
+
+    TYPE_INT   shift, and go to state 1
+    TYPE_CHAR  shift, and go to state 2
+    TYPE_BOOL  shift, and go to state 3
+    "static"   shift, and go to state 138
+
+    $default  reduce using rule 40 (StatementList)
+
+    ScopedVariableDecl  go to state 139
+    TypeSpecifier       go to state 140
+    StatementList       go to state 141
+
+
+State 111
+
+   44 CompleteCondition: "if" SimpleExpression . "then" Statement "else" Statement
+   45 IncompleteCondition: "if" SimpleExpression . "then" Statement
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "then"  shift, and go to state 142
+    "or"    shift, and go to state 88
+
+
+State 112
+
+   46 IteratorStmt: "while" SimpleExpression . "do" Statement
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "do"  shift, and go to state 143
+    "or"  shift, and go to state 88
+
+
+State 113
+
+   47 IteratorStmt: "for" T_IDENTIFIER . "=" IteratorRange "do" Statement
+
+    "="  shift, and go to state 144
+
+
+State 114
+
+   51 ReturnStmt: "return" ";" .
+
+    $default  reduce using rule 51 (ReturnStmt)
+
+
+State 115
+
+   52 ReturnStmt: "return" Expression . ";"
+
+    ";"  shift, and go to state 145
+
+
+State 116
+
+   53 BreakStmt: "break" ";" .
+
+    $default  reduce using rule 53 (BreakStmt)
+
+
+State 117
+
+   35 ExpressionStmt: Expression ";" .
+
+    $default  reduce using rule 35 (ExpressionStmt)
+
+
+State 118
+
+   54 Expression: Mutable "=" . Expression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 146
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 119
+
+   57 Expression: Mutable "--" .
+
+    $default  reduce using rule 57 (Expression)
+
+
+State 120
+
+   56 Expression: Mutable "++" .
+
+    $default  reduce using rule 56 (Expression)
+
+
+State 121
+
+   59 OperAssign: T_OP_ADDASS .
+
+    $default  reduce using rule 59 (OperAssign)
+
+
+State 122
+
+   61 OperAssign: T_OP_MINASS .
+
+    $default  reduce using rule 61 (OperAssign)
+
+
+State 123
+
+   62 OperAssign: T_OP_MULASS .
+
+    $default  reduce using rule 62 (OperAssign)
+
+
+State 124
+
+   60 OperAssign: T_OP_DIVASS .
+
+    $default  reduce using rule 60 (OperAssign)
+
+
+State 125
+
+   55 Expression: Mutable OperAssign . Expression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 147
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 126
+
+   18 FunctionDecl: TypeSpecifier T_IDENTIFIER "(" Parameters ")" Statement .
+
+    $default  reduce using rule 18 (FunctionDecl)
+
+
+State 127
+
+   99 Immutable: "(" Expression ")" .
+
+    $default  reduce using rule 99 (Immutable)
+
+
+State 128
+
+   98 Mutable: T_IDENTIFIER "[" Expression . "]"
+
+    "]"  shift, and go to state 148
+
+
+State 129
+
+  106 ArgumentList: Expression .
+
+    $default  reduce using rule 106 (ArgumentList)
+
+
+State 130
+
+  102 Call: T_IDENTIFIER "(" Arguments . ")"
+
+    ")"  shift, and go to state 149
+
+
+State 131
+
+  104 Arguments: ArgumentList .
+  105 ArgumentList: ArgumentList . "," Expression
+
+    ","  shift, and go to state 150
+
+    $default  reduce using rule 104 (Arguments)
+
+
+State 132
+
+   63 SimpleExpression: SimpleExpression "or" AndExpr .
+   65 AndExpr: AndExpr . "and" UnaryReletiveExpr
+
+    "and"  shift, and go to state 89
+
+    $default  reduce using rule 63 (SimpleExpression)
+
+
+State 133
+
+   65 AndExpr: AndExpr "and" UnaryReletiveExpr .
+
+    $default  reduce using rule 65 (AndExpr)
+
+
+State 134
+
+   69 ReletiveExpr: MinMaxExp ReletiveOper MinMaxExp .
+   77 MinMaxExp: MinMaxExp . MinMaxOper SumExpr
+
+    T_OP_MAX  shift, and go to state 96
+    T_OP_MIN  shift, and go to state 97
+
+    $default  reduce using rule 69 (ReletiveExpr)
+
+    MinMaxOper  go to state 99
+
+
+State 135
+
+   77 MinMaxExp: MinMaxExp MinMaxOper SumExpr .
+   81 SumExpr: SumExpr . SumOper MulExp
+
+    T_OP_MINUS  shift, and go to state 100
+    T_OP_PLUS   shift, and go to state 101
+
+    $default  reduce using rule 77 (MinMaxExp)
+
+    SumOper  go to state 102
+
+
+State 136
+
+   81 SumExpr: SumExpr SumOper MulExp .
+   85 MulExp: MulExp . MulOp UnaryExpr
+
+    T_OP_MULTI   shift, and go to state 103
+    T_OP_DIVIDE  shift, and go to state 104
+    T_OP_MODULO  shift, and go to state 105
+
+    $default  reduce using rule 81 (SumExpr)
+
+    MulOp  go to state 106
+
+
+State 137
+
+   85 MulExp: MulExp MulOp UnaryExpr .
+
+    $default  reduce using rule 85 (MulExp)
+
+
+State 138
+
+    7 ScopedVariableDecl: "static" . TypeSpecifier VariableDeclList ";"
+
+    TYPE_INT   shift, and go to state 1
+    TYPE_CHAR  shift, and go to state 2
+    TYPE_BOOL  shift, and go to state 3
+
+    TypeSpecifier  go to state 151
+
+
+State 139
+
+   39 LocalDecls: LocalDecls ScopedVariableDecl .
+
+    $default  reduce using rule 39 (LocalDecls)
+
+
+State 140
+
+    8 ScopedVariableDecl: TypeSpecifier . VariableDeclList ";"
+
+    T_IDENTIFIER  shift, and go to state 34
+
+    VariableDeclList  go to state 152
+    VariableDeclInit  go to state 16
+    VariableDeclID    go to state 17
+
+
+State 141
+
+   37 CompoundStmt: "{" LocalDecls StatementList . "}"
+   41 StatementList: StatementList . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "}"             shift, and go to state 153
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 154
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 142
+
+   44 CompleteCondition: "if" SimpleExpression "then" . Statement "else" Statement
+   45 IncompleteCondition: "if" SimpleExpression "then" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 155
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 143
+
+   46 IteratorStmt: "while" SimpleExpression "do" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 156
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 144
+
+   47 IteratorStmt: "for" T_IDENTIFIER "=" . IteratorRange "do" Statement
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    IteratorRange      go to state 157
+    SimpleExpression   go to state 158
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 145
+
+   52 ReturnStmt: "return" Expression ";" .
+
+    $default  reduce using rule 52 (ReturnStmt)
+
+
+State 146
+
+   54 Expression: Mutable "=" Expression .
+
+    $default  reduce using rule 54 (Expression)
+
+
+State 147
+
+   55 Expression: Mutable OperAssign Expression .
+
+    $default  reduce using rule 55 (Expression)
+
+
+State 148
+
+   98 Mutable: T_IDENTIFIER "[" Expression "]" .
+
+    $default  reduce using rule 98 (Mutable)
+
+
+State 149
+
+  102 Call: T_IDENTIFIER "(" Arguments ")" .
+
+    $default  reduce using rule 102 (Call)
+
+
+State 150
+
+  105 ArgumentList: ArgumentList "," . Expression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Expression         go to state 159
+    SimpleExpression   go to state 79
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 80
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 151
+
+    7 ScopedVariableDecl: "static" TypeSpecifier . VariableDeclList ";"
+
+    T_IDENTIFIER  shift, and go to state 34
+
+    VariableDeclList  go to state 160
+    VariableDeclInit  go to state 16
+    VariableDeclID    go to state 17
+
+
+State 152
+
+    8 ScopedVariableDecl: TypeSpecifier VariableDeclList . ";"
+   10 VariableDeclList: VariableDeclList . "," VariableDeclInit
+
+    ","  shift, and go to state 24
+    ";"  shift, and go to state 161
+
+
+State 153
+
+   37 CompoundStmt: "{" LocalDecls StatementList "}" .
+
+    $default  reduce using rule 37 (CompoundStmt)
+
+
+State 154
+
+   41 StatementList: StatementList Statement .
+
+    $default  reduce using rule 41 (StatementList)
+
+
+State 155
+
+   44 CompleteCondition: "if" SimpleExpression "then" Statement . "else" Statement
+   45 IncompleteCondition: "if" SimpleExpression "then" Statement .
+
+    "else"  shift, and go to state 162
+
+    "else"    [reduce using rule 45 (IncompleteCondition)]
+    $default  reduce using rule 45 (IncompleteCondition)
+
+
+State 156
+
+   46 IteratorStmt: "while" SimpleExpression "do" Statement .
+
+    $default  reduce using rule 46 (IteratorStmt)
+
+
+State 157
+
+   47 IteratorStmt: "for" T_IDENTIFIER "=" IteratorRange . "do" Statement
+
+    "do"  shift, and go to state 163
+
+
+State 158
+
+   48 IteratorRange: SimpleExpression .
+   49              | SimpleExpression . "to" SimpleExpression
+   50              | SimpleExpression . "to" SimpleExpression "by" SimpleExpression
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "or"  shift, and go to state 88
+    "to"  shift, and go to state 164
+
+    $default  reduce using rule 48 (IteratorRange)
+
+
+State 159
+
+  105 ArgumentList: ArgumentList "," Expression .
+
+    $default  reduce using rule 105 (ArgumentList)
+
+
+State 160
+
+    7 ScopedVariableDecl: "static" TypeSpecifier VariableDeclList . ";"
+   10 VariableDeclList: VariableDeclList . "," VariableDeclInit
+
+    ","  shift, and go to state 24
+    ";"  shift, and go to state 165
+
+
+State 161
+
+    8 ScopedVariableDecl: TypeSpecifier VariableDeclList ";" .
+
+    $default  reduce using rule 8 (ScopedVariableDecl)
+
+
+State 162
+
+   44 CompleteCondition: "if" SimpleExpression "then" Statement "else" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 166
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 163
+
+   47 IteratorStmt: "for" T_IDENTIFIER "=" IteratorRange "do" . Statement
+
+    ";"             shift, and go to state 62
+    "("             shift, and go to state 36
+    "{"             shift, and go to state 63
+    "if"            shift, and go to state 64
+    "while"         shift, and go to state 65
+    "for"           shift, and go to state 66
+    "return"        shift, and go to state 67
+    "break"         shift, and go to state 68
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    Statement            go to state 167
+    ExpressionStmt       go to state 70
+    CompoundStmt         go to state 71
+    ConditionStmt        go to state 72
+    CompleteCondition    go to state 73
+    IncompleteCondition  go to state 74
+    IteratorStmt         go to state 75
+    ReturnStmt           go to state 76
+    BreakStmt            go to state 77
+    Expression           go to state 78
+    SimpleExpression     go to state 79
+    AndExpr              go to state 47
+    UnaryReletiveExpr    go to state 48
+    ReletiveExpr         go to state 49
+    MinMaxExp            go to state 50
+    SumExpr              go to state 51
+    MulExp               go to state 52
+    UnaryExpr            go to state 53
+    UnaryOper            go to state 54
+    Factor               go to state 55
+    Mutable              go to state 80
+    Immutable            go to state 57
+    Call                 go to state 58
+    Constant             go to state 59
+
+
+State 164
+
+   49 IteratorRange: SimpleExpression "to" . SimpleExpression
+   50              | SimpleExpression "to" . SimpleExpression "by" SimpleExpression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SimpleExpression   go to state 168
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 165
+
+    7 ScopedVariableDecl: "static" TypeSpecifier VariableDeclList ";" .
+
+    $default  reduce using rule 7 (ScopedVariableDecl)
+
+
+State 166
+
+   44 CompleteCondition: "if" SimpleExpression "then" Statement "else" Statement .
+
+    $default  reduce using rule 44 (CompleteCondition)
+
+
+State 167
+
+   47 IteratorStmt: "for" T_IDENTIFIER "=" IteratorRange "do" Statement .
+
+    $default  reduce using rule 47 (IteratorStmt)
+
+
+State 168
+
+   49 IteratorRange: SimpleExpression "to" SimpleExpression .
+   50              | SimpleExpression "to" SimpleExpression . "by" SimpleExpression
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "by"  shift, and go to state 169
+    "or"  shift, and go to state 88
+
+    $default  reduce using rule 49 (IteratorRange)
+
+
+State 169
+
+   50 IteratorRange: SimpleExpression "to" SimpleExpression "by" . SimpleExpression
+
+    "("             shift, and go to state 36
+    "not"           shift, and go to state 37
+    T_OP_MINUS      shift, and go to state 38
+    T_OP_MULTI      shift, and go to state 39
+    T_OP_GENERATOR  shift, and go to state 40
+    T_STRINGCONST   shift, and go to state 41
+    T_NUMCONST      shift, and go to state 42
+    T_CHARCONST     shift, and go to state 43
+    T_BOOLCONST     shift, and go to state 44
+    T_IDENTIFIER    shift, and go to state 45
+
+    SimpleExpression   go to state 170
+    AndExpr            go to state 47
+    UnaryReletiveExpr  go to state 48
+    ReletiveExpr       go to state 49
+    MinMaxExp          go to state 50
+    SumExpr            go to state 51
+    MulExp             go to state 52
+    UnaryExpr          go to state 53
+    UnaryOper          go to state 54
+    Factor             go to state 55
+    Mutable            go to state 56
+    Immutable          go to state 57
+    Call               go to state 58
+    Constant           go to state 59
+
+
+State 170
+
+   50 IteratorRange: SimpleExpression "to" SimpleExpression "by" SimpleExpression .
+   63 SimpleExpression: SimpleExpression . "or" AndExpr
+
+    "or"  shift, and go to state 88
+
+    $default  reduce using rule 50 (IteratorRange)

@@ -3,7 +3,7 @@
 #if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
-#include "token_parser.tab.hh"
+#include "parser.tab.hh"
 #include "location.hh"
 namespace scanner
 {
@@ -14,13 +14,13 @@ namespace scanner
       using yyFlexLexer::yylex;
       virtual
       int yylex(
-        parser::TokenParser::semantic_type * const lval, \
-        parser::TokenParser::location_type *location, \
-        parser::Context & context \
+        parser::CMinParser::semantic_type * const lval, 
+        parser::CMinParser::location_type *location, 
+        parser::Context & context 
       );
       private:
-         parser::TokenParser::semantic_type *yylval = nullptr;
-         parser::TokenParser::location_type *loc    = nullptr;
+         parser::CMinParser::semantic_type *yylval = nullptr;
+         parser::CMinParser::location_type *loc    = nullptr;
   };
 }
 #endif //TOKEN_LEXER_CLASS_HPP

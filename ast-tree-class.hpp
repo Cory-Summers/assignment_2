@@ -6,21 +6,28 @@
 #include <vector>
 #include "ast-node-classes.hpp"
 #include "ast-symbol-table.hpp"
+#include "ast-expression-classes.hpp"
 namespace ast
 {
   class Tree
   {
     public:
-      using node_pointer = std::unique_ptr<INode>;
+      using node_pointer = std::shared_ptr<INode>;
       using string_type  = std::string;
-      using map_type     = std::map<string_type, Identifier *>;
     public:
     Tree();
     void Print(std::ostream & = std::cout);
+    INode * GetCurrent() { return m_current; }
+    INode * SetCurrent(INode * node) { m_current = node; return node; }
+    void    SetHead(node_pointer & node) { m_node_head = node; m_current = node.get(); }
+    node_pointer GetHead() { return m_node_head; }
     private:
-      map_type  m_functions;
-      node_pointer m_node_head; //Its a hydra okay.
-      SymbolTable  m_symbol_head;
+      void RecursivePrint(INode * current, string_type &, std::size_t idx, std::size_t depth, std::ostream &);
+      void SiblingPrint(INode * current, string_type &, std::size_t idx, std::size_t depth, std::ostream &);
+      void PrintIndent(std::size_t const & n, std::ostream &);
+      INode *   m_current;
+      node_pointer m_node_head; 
+      //SymbolTable  m_symbol_head;
   };
 }
 #endif//AST_TREE_CLASS

@@ -51,6 +51,16 @@
     "xhash": "cpp",
     "algorithm": "cpp",
     "numeric": "cpp",
-    "bitset": "cpp"
+    "bitset": "cpp",
+    "functional": "cpp",
+    "future": "cpp",
+    "sstream": "cpp",
+    "chrono": "cpp",
+    "condition_variable": "cpp",
+    "coroutine": "cpp",
+    "resumable": "cpp",
+    "mutex": "cpp",
+    "ratio": "cpp",
+    "thread": "cpp"
   }
 }

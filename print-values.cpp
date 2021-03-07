@@ -57,3 +57,7 @@ void parser::PrintOperator(std::int64_t ln, const char * token)
     token
   );
 }
+void parser::PrintWarning(std::ostream & stream, parser::location const & loc, std::string const & msg)
+{
+  stream << "WARNING(" << loc.begin.line << "): " << msg << '\n';
+}

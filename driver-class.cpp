@@ -1,4 +1,11 @@
 #include "driver-class.hpp"
+#include <fstream>
+const char k_help_message[] =
+    "Usage: c- [options] [sourceFile]\n"
+    "  -d  turn on Bison debugging\n"
+    "  -h  this usage message\n"
+    "  -P  print abstract syntax tree + types"
+    "  -S  turn on symbol table debugging";
 Driver::Driver(int argc, char *argv[])
     : m_input()
 {
@@ -7,16 +14,22 @@ Driver::Driver(int argc, char *argv[])
 }
 void Driver::Initialize()
 {
-  m_input   = RetrieveInput();
+  m_input = RetrieveInput();
   m_context = parser::Context(m_parameters[0], m_input);
   m_scanner = std::make_unique<scanner::TokenLexer>(m_input);
-  m_parser  = std::make_unique<parser::TokenParser>(*m_scanner, m_context);
+  m_parser = std::make_unique<parser::CMinParser>(*m_scanner, m_context, std::cout);
 }
 void Driver::Parse()
 {
   if (m_parser->parse() != 0)
   {
     std::cerr << "Parser was unable parse!\n";
+    return;
+  }
+  
+  if (m_flags.find('P') != m_flags.end())
+  {
+    m_context.ast_tree.Print(std::cout);
   }
 }
 std::istream *Driver::RetrieveInput()
@@ -47,6 +60,24 @@ std::istream *Driver::RetrieveInput()
     return stream;
   }
 }
+void Driver::InitFlags()
+{
+  for(auto & flag : m_flags)
+  {
+    switch(flag.first)
+    {
+      case int('h'):
+        std::cout << k_help_message <<'\n';
+        std::exit(flag.first);
+        break;
+      case int('d'):
+        m_parser->set_debug_level(1);
+        m_parser->set_debug_stream(std::cerr);
+        break;
+      
+    }
+  }
+}
 /* For right now no need to write a proper get-opt. I hate the unix impl 
 for using global variables for function call */
 void Driver::ProcessArguments(int argc, char *argv[])
@@ -70,3 +101,8 @@ void Driver::ProcessArguments(int argc, char *argv[])
     }
   }
 }
+parser::Context::Context(std::string name, std::istream * ptr)
+: file_name(name)
+, file(ptr)
+, ast_tree()
+{}

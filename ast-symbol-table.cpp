@@ -1,5 +1,6 @@
 #include "ast-symbol-table.hpp"
 #include "ast-node-classes.hpp"
+#include "semantic-analysis-class.hpp"
 #include <exception>
 ast::SymbolTable::SymbolTable()
   : m_symbols()
@@ -8,6 +9,13 @@ ast::SymbolTable::SymbolTable()
   , m_depth(0)
 {
 
+}
+ast::SymbolTable::SymbolTable(SymbolTable * parent)
+  : m_symbols()
+  , m_parent(parent)
+  , m_child_scopes()
+  , m_depth((parent) ? parent->m_depth + 1 : 0)
+{
 }
 ast::Identifier * ast::SymbolTable::operator[](string_cref key)
 {
@@ -28,7 +36,7 @@ ast::Identifier&  ast::SymbolTable::insert(string_cref key, Identifier & ident)
   ast::Identifier * exists = this->operator[](key);
   if(exists != nullptr)
   {
-    throw std::runtime_error(std::string("Symbol \'") + key + std::string("\' already exists."));
+    throw Message(ident.GetLocation(), Message::Type::kError, *exists);
   }
   return *(m_symbols.insert({key, &ident}).first->second); //wtf stl
 }
@@ -40,3 +48,10 @@ ast::SymbolTable & ast::SymbolTable::EmplaceScopeBack()
     m_child_scopes.push_back(std::move(ptr));
     return *m_child_scopes.back();
   }
+
+ast::SymbolTable::string_type ast::SymbolTable::ExistingSymbolError(Identifier const & existed)
+{
+  string_type str = "Symbol \'" + existed.GetName() + "\' is already declared on line " + std::to_string(existed.GetLocation().begin.line)+
+  '.';
+  return str; 
+}

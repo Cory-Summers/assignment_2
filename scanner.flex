@@ -16,11 +16,11 @@
   //OPERATOR [-][-]|[+][+]|[+\-<>*\/!=][=]|[\[\]()&|=*+\-\/%<>!?:,;]
   #undef  YY_DECL
   #define YY_DECL int scanner::TokenLexer::yylex( \
-     parser::TokenParser::semantic_type * const lval, \
-     parser::TokenParser::location_type *location, \
+     parser::CMinParser::semantic_type * const lval, \
+     parser::CMinParser::location_type *location, \
      parser::Context & context \
      )
-
+  #define YY_USER_ACTION location->step(); location->columns(yyleng);
 %}
 
 IDENTIFIER  ([A-Za-z][_A-Za-z0-9]*)
@@ -30,6 +30,7 @@ NUMCONST ([0-9]+)
 CHARCONST (\'([\\].|[^']+)\') 
 BADCHARCONST (\'([\\].+|.+)\')
 WHITESPACE ([ \t]+)
+COMMENT (\/\/[^\n\r]*)
   /*Compound Assignment Operators */
 
 NEWLINE  ([\n]|(\r\n))
@@ -37,87 +38,84 @@ NEWLINE  ([\n]|(\r\n))
 %{
   yylval = lval;
 %}
+{COMMENT} {}
 {STRING}  { 
-  yylval->token.token_string = std::string(yytext);
-  yylval->token.string_value = parser::EncodeString(yytext, yyleng);
-  return parser::TokenParser::token::T_STRINGCONST;
+  yylval->token = scanner::factory::TokenString(yytext, *location);
+  return parser::CMinParser::token::T_STRINGCONST;
 }
 {NUMCONST} {
   
-  yylval->token.num_value = std::strtol(yytext, nullptr, 10);
-  yylval->token.token_string = std::string(yytext);
-  return parser::TokenParser::token::T_NUMCONST;
+  yylval->token = scanner::factory::TokenNumeric(yytext, *location);
+  return parser::CMinParser::token::T_NUMCONST;
 }
 {CHARCONST} {
-  yylval->token.token_string = std::string(yytext, yyleng);
-  yylval->token.char_value   = parser::EncodeChar(yytext, yyleng);
-  return parser::TokenParser::token::T_CHARCONST;
+  yylval->token = scanner::factory::TokenChar(yytext, *location);
+  return parser::CMinParser::token::T_CHARCONST;
 }
 {BADCHARCONST} {
-  std::cerr << context.file_name << ':' << context.loc.line << ": warning: multi-character wide character constant used\n\t"
+  std::cerr << context.file_name << ':' << location->begin.line << ": warning: multi-character wide character constant used\n\t"
   << yytext << '\n';
-  yylval->token.token_string = std::string(yytext);
-  yylval->token.char_value   = parser::EncodeChar(yytext, yyleng);
-  return parser::TokenParser::token::T_CHARCONST;
+  yylval->token = scanner::factory::TokenChar(yytext, *location);
+  return parser::CMinParser::token::T_CHARCONST;
 }
-"int"    { return parser::TokenParser::token::TYPE_INT;  }
-"char"   { return parser::TokenParser::token::TYPE_CHAR; }
-"bool"   { return parser::TokenParser::token::TYPE_BOOL; }
-"if"     { return parser::TokenParser::token::T_KEY_IF;   }
-"else"   { return parser::TokenParser::token::T_KEY_ELSE; }
-"return" { return parser::TokenParser::token::T_KEY_RETURN; }
-"for"    { return parser::TokenParser::token::T_KEY_FOR;    }
-"while"  { return parser::TokenParser::token::T_KEY_WHILE;  }
-"in"     { return parser::TokenParser::token::T_KEY_IN;     }
-"by"     { return parser::TokenParser::token::T_KEY_BY;     }
-"do"     { return parser::TokenParser::token::T_KEY_DO;     }
-"then"   { return parser::TokenParser::token::T_KEY_THEN;   }
-"static" { return parser::TokenParser::token::T_KEY_STATIC; }
-"break"  { return parser::TokenParser::token::T_KEY_BREAK;  }
-"or"     { return parser::TokenParser::token::T_KEY_OR;     }
-"and"    { return parser::TokenParser::token::T_KEY_AND;    }
-"not"    { return parser::TokenParser::token::T_KEY_NOT;    }
-"true"   { yylval->token.num_value = 1; return parser::TokenParser::token::T_BOOLCONST;   }
-"false"  { yylval->token.num_value = 0; return parser::TokenParser::token::T_BOOLCONST;   }
+"int"    { return parser::CMinParser::token::TYPE_INT;  }
+"char"   { return parser::CMinParser::token::TYPE_CHAR; }
+"bool"   { return parser::CMinParser::token::TYPE_BOOL; }
+"if"     { return parser::CMinParser::token::T_KEY_IF;   }
+"else"   { return parser::CMinParser::token::T_KEY_ELSE; }
+"return" { return parser::CMinParser::token::T_KEY_RETURN; }
+"for"    { return parser::CMinParser::token::T_KEY_FOR;    }
+"while"  { return parser::CMinParser::token::T_KEY_WHILE;  }
+"by"     { return parser::CMinParser::token::T_KEY_BY;     }
+"do"     { return parser::CMinParser::token::T_KEY_DO;     }
+"then"   { return parser::CMinParser::token::T_KEY_THEN;   }
+"static" { return parser::CMinParser::token::T_KEY_STATIC; }
+"break"  { return parser::CMinParser::token::T_KEY_BREAK;  }
+"or"     { return parser::CMinParser::token::T_KEY_OR;     }
+"and"    { return parser::CMinParser::token::T_KEY_AND;    }
+"not"    { return parser::CMinParser::token::T_KEY_NOT;    }
+"to"     { return parser::CMinParser::token::T_KEY_TO;     }
+"true"   { yylval->token = scanner::factory::TokenBoolean(true, *location); return parser::CMinParser::token::T_BOOLCONST;   }
+"false"  { yylval->token = scanner::factory::TokenBoolean(false, *location); return parser::CMinParser::token::T_BOOLCONST;   }
 {IDENTIFIER} {
-  yylval->token.token_string = std::string(yytext);
-  return parser::TokenParser::token::T_IDENTIFIER;
+  yylval->token = scanner::factory::TokenIdentifier(yytext, *location);
+  return parser::CMinParser::token::T_IDENTIFIER;
 }
   /*Non Operator Symbols*/
-":"  { return parser::TokenParser::token::T_COLON; }
-";"  { return parser::TokenParser::token::T_END_STMT;  }
-","  { return parser::TokenParser::token::T_DECL_SEP;  }
-"{"  { return parser::TokenParser::token::T_LHS_BRACE; }
-"}"  { return parser::TokenParser::token::T_RHS_BRACE; }
-"("  { return parser::TokenParser::token::T_LHS_PAREN; }
-")"  { return parser::TokenParser::token::T_RHS_PAREN; }
-"["  { return parser::TokenParser::token::T_LHS_BRACK; }
-"]"  { return parser::TokenParser::token::T_RHS_BRACK; }
+":"  { return parser::CMinParser::token::T_COLON; }
+";"  { return parser::CMinParser::token::T_END_STMT;  }
+","  { return parser::CMinParser::token::T_DECL_SEP;  }
+"{"  { return parser::CMinParser::token::T_LHS_BRACE; }
+"}"  { return parser::CMinParser::token::T_RHS_BRACE; }
+"("  { return parser::CMinParser::token::T_LHS_PAREN; }
+")"  { return parser::CMinParser::token::T_RHS_PAREN; }
+"["  { return parser::CMinParser::token::T_LHS_BRACK; }
+"]"  { return parser::CMinParser::token::T_RHS_BRACK; }
   /* Operator Symbols */
-  /* Operators will be scoped with parser::TokenParser::token::T_OP_(BLAH) */
-"<="  { return parser::TokenParser::token::T_OP_LES_EQ; } //Less then Equals to
-"<"   { return parser::TokenParser::token::T_OP_LESS;  }
-">"   { return parser::TokenParser::token::T_OP_GREAT; }
-">="  { return parser::TokenParser::token::T_OP_GRE_EQ; }
-"=="  { return parser::TokenParser::token::T_OP_EQUALIVE; }
-"!="  { return parser::TokenParser::token::T_OP_NOT_EQUAL; }
-"--"  { return parser::TokenParser::token::T_DECREMENT; }
-"++"  { return parser::TokenParser::token::T_INCREMENT; }
-":>:" { return parser::TokenParser::token::T_OP_MAX; }
-":<:" { return parser::TokenParser::token::T_OP_MIN; }
-"+"   { return parser::TokenParser::token::T_OP_PLUS; }
-"-"   { return parser::TokenParser::token::T_OP_MINUS; }
-"*"   { return parser::TokenParser::token::T_OP_MULTI; }
-"\/"  { return parser::TokenParser::token::T_OP_DIVIDE; }
-"\%"  { return parser::TokenParser::token::T_OP_MODULO; }
-"?"   { return parser::TokenParser::token::T_OP_GENERATOR; }
-"+="  { return parser::TokenParser::token::T_OP_ADDASS; }
-"-="  { return parser::TokenParser::token::T_OP_MINASS; }
-"*="  { return parser::TokenParser::token::T_OP_MULASS; }
-"\/=" { return parser::TokenParser::token::T_OP_DIVASS; }
-"="   { return parser::TokenParser::token::T_OP_ASSIGN; }
+  /* Operators will be scoped with parser::CMinParser::token::T_OP_(BLAH) */
+"<="  { return parser::CMinParser::token::T_OP_LES_EQ; } //Less then Equals to
+"<"   { return parser::CMinParser::token::T_OP_LESS;  }
+">"   { return parser::CMinParser::token::T_OP_GREAT; }
+">="  { return parser::CMinParser::token::T_OP_GRE_EQ; }
+"=="  { return parser::CMinParser::token::T_OP_EQUALIVE; }
+"!="  { return parser::CMinParser::token::T_OP_NOT_EQUAL; }
+"--"  { return parser::CMinParser::token::T_DECREMENT; }
+"++"  { return parser::CMinParser::token::T_INCREMENT; }
+":>:" { return parser::CMinParser::token::T_OP_MAX; }
+":<:" { return parser::CMinParser::token::T_OP_MIN; }
+"+"   { return parser::CMinParser::token::T_OP_PLUS; }
+"-"   { return parser::CMinParser::token::T_OP_MINUS; }
+"*"   { return parser::CMinParser::token::T_OP_MULTI; }
+"\/"  { return parser::CMinParser::token::T_OP_DIVIDE; }
+"\%"  { return parser::CMinParser::token::T_OP_MODULO; }
+"?"   { return parser::CMinParser::token::T_OP_GENERATOR; }
+"+="  { return parser::CMinParser::token::T_OP_ADDASS; }
+"-="  { return parser::CMinParser::token::T_OP_MINASS; }
+"*="  { return parser::CMinParser::token::T_OP_MULASS; }
+"\/=" { return parser::CMinParser::token::T_OP_DIVASS; }
+"="   { return parser::CMinParser::token::T_OP_ASSIGN; }
 {WHITESPACE} { }
-{NEWLINE} { context.loc.lines(1); }
-. { std::cerr << "ERROR(" << context.loc.line << "): Invalid or misplaced input character: \'" << yytext << "\'. Character Ignored.\n";}
+{NEWLINE} { location->lines(); }
+. { std::cerr << "ERROR(" << location->begin.line << "): Invalid or misplaced input character: \'" << yytext << "\'. Character Ignored.\n";}
 
 %%
